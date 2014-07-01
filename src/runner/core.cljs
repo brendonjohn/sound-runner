@@ -3,7 +3,7 @@
             [goog.events :as events]
             [om.core :as om :include-macros true]
             [om.dom :as dom :include-macros true]
-            [runner.physics :refer [create-player physics-chan]]
+            [runner.physics :refer [create-player physics-chan main-player]]
             [runner.dom :refer [game-view controller-view]]
             [runner.controller :refer [controller-state]])
   (:require-macros [cljs.core.async.macros :refer [go alt! go-loop]]))
@@ -13,13 +13,12 @@
 
 ;; player state
 ;; ----------------------------------------------------------------------------
-(def main-player (create-player 1))
 
 (def app-state (atom {:player {:x (aget (.-position main-player) 0)
                                :y (aget (.-position main-player) 1)}}))
 
-(def xmovement 0.2)
-(def ymovement 0.5)
+(def xmovement 20)
+(def ymovement 40)
 (defn player-movement [controller]
   (let [{:keys [left right jump]} controller]
     {:dx (if (= left :on) (- xmovement) (if (= right :on) xmovement 0))
@@ -43,8 +42,8 @@
       (swap! app-state (update-player :y))
       ;; adjust player velocity by the controller
       (let [{:keys [dx dy]} (player-movement (:controller @controller-state))]
-        (aset (.-velocity main-player) 1 (+ (aget (.-velocity main-player) 1) dy))
-        (aset (.-velocity main-player) 0 (+ (aget (.-velocity main-player) 0) dx)))))
+        (aset (.-force main-player) 1 (+ (aget (.-force main-player) 1) dy))
+        (aset (.-force main-player) 0 (+ (aget (.-force main-player) 0) dx)))))
 
 ;; tie om component to data
 ;; ----------------------------------------------------------------------------
