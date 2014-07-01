@@ -29,6 +29,7 @@
             (dom/div nil
                      (dom/p nil (controller-keys (:controller state)))))))
 
+
 ;; screen coordinates
 ;; ----------------------------------------------------------------------------
 
@@ -38,13 +39,16 @@
 (def screen-height (fn [_] js/window.innerHeight))
 
 
-
-
 ;; player view
 ;; ----------------------------------------------------------------------------
 
-(defn player-width [radius]
-  (let [width (* radius physics-to-pixel 2)
+(defn player-width
+  "on-screen width"
+  [radius]
+  (* radius physics-to-pixel 2))
+
+(defn ps-size [radius]
+  (let [width (player-width radius)
         radius (/ width 2)]
     {:width width
      :height width
@@ -52,17 +56,22 @@
      :-moz-border-radius radius
      :border-radius radius}))
 
-(defn player-position [x y]
+(defn player-x
+  "on-screen x position"
+  [radius]
+  (- (/ (screen-width) 2) (* radius physics-to-pixel)))
+
+(defn ps-position [x y radius]
   {:bottom (js/Math.round (* physics-to-pixel y))
-   :left (js/Math.round (* physics-to-pixel x))})
+   :left (js/Math.round (player-x radius))})
 
 (defn player-style
   "construct a style string from a js array. e.g position = #js [0, 9.8]"
   [player]
   (clj->js (merge {:position "absolute"
                   :background-color "orange"}
-                 (player-width (:radius player))
-                 (player-position (:x player) (:y player)))))
+                 (ps-size (:radius player))
+                 (ps-position (:x player) (:y player) (:radius player)))))
 
 
 (defn player-view [player owner]
@@ -71,12 +80,6 @@
     (render [_]
             (dom/div #js {:style (player-style player)} "player"))))
 
-;; width: 50px;
-;; height: 50px;
-;; -webkit-border-radius: 25px;
-;; -moz-border-radius: 25px;
-;; border-radius: 25px;
-;; background-color:orange;
 
 ;; game view/wrapper
 ;; ----------------------------------------------------------------------------
