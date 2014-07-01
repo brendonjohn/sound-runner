@@ -32,7 +32,7 @@
 (def ground (create-plane "lol"))
 (def main-player (create-player 1))
 
-(contact-material ground main-player 10)
+(contact-material ground main-player 100)
 
 
 (def physics-chan (chan))
