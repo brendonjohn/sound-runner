@@ -44,8 +44,8 @@
         right-chan (key-channel :right)
         jump-chan (key-channel :jump)
         app-state (atom {:controller {:left :off
-                                     :right :off
-                                     :jump :off}})]
+                                      :right :off
+                                      :jump :off}})]
     (go (while true
           (let [[v c] (alts! [left-chan right-chan jump-chan])]
             (condp = c
@@ -53,5 +53,3 @@
               right-chan (swap! app-state (update-key :right v))
               jump-chan (swap! app-state (update-key :jump v))))))
     app-state))
-
-controller-state
