@@ -1,0 +1,22 @@
+{
+  "name": "runner",
+  "main": "runner.js",
+  "version": "0.1.0",
+  "homepage": "https://github.com/brendonjohn/sound-runner",
+  "authors": [
+    "brendon@marbonbros.com"
+  ],
+  "description": "cljs game that rides the soundcloud radio",
+  "license": "none",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "p2js": "~0.5.0"
+  }
+}

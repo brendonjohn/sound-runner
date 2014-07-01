@@ -10,3 +10,4 @@ pom.xml
 
 .nrepl-port
 runner.js
+/bower_components
