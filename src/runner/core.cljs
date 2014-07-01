@@ -3,7 +3,7 @@
             [goog.events :as events]
             [om.core :as om :include-macros true]
             [om.dom :as dom :include-macros true]
-            [runner.physics :refer [create-player physics-chan main-player]]
+            [runner.physics :refer [create-player physics-chan main-player player-radius]]
             [runner.dom :refer [game-view controller-view]]
             [runner.controller :refer [controller-state]])
   (:require-macros [cljs.core.async.macros :refer [go alt! go-loop]]))
@@ -15,7 +15,8 @@
 ;; ----------------------------------------------------------------------------
 
 (def app-state (atom {:player {:x (aget (.-position main-player) 0)
-                               :y (aget (.-position main-player) 1)}}))
+                               :y (aget (.-position main-player) 1)
+                               :radius player-radius}}))
 
 (def xmovement 20)
 (def ymovement 40)

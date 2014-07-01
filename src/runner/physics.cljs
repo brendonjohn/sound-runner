@@ -34,8 +34,9 @@
 
 ;; add bodies to the world
 ;; ----------------------------------------------------------------------------
+(def player-radius 0.25)
 (def ground (create-plane "lol"))
-(def main-player (create-player 1))
+(def main-player (create-player player-radius))
 
 (contact-material ground main-player 100)
 
