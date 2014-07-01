@@ -3,10 +3,13 @@
   (:require-macros [cljs.core.async.macros :refer [go alt! go-loop]]))
 
 
-;Setup our world
+;; hello physics world
+;; ----------------------------------------------------------------------------
 (def world (js/p2.World. (js-obj "gravity" #js [0 -9.82])))
 
-;Create a plane
+;; physics functions - all of these have a side-affect :'(
+;; ----------------------------------------------------------------------------
+
 (defn create-plane [_]
   (let [groundShape (js/p2.Plane.)
         groundBody (js/p2.Body. (js-obj "mass" 0))]
@@ -29,24 +32,19 @@
                                                      (.-material (first (.-shapes shape2)) )
                                                      (js-obj "friction" friction))))
 
+;; add bodies to the world
+;; ----------------------------------------------------------------------------
 (def ground (create-plane "lol"))
 (def main-player (create-player 1))
 
 (contact-material ground main-player 100)
 
+;; physics loop
+;; ----------------------------------------------------------------------------
 
 (def physics-chan (chan))
 (go (while true
       (<! (timeout 10))
       (.step world (/ 1 60))
       (>! physics-chan 1)))
-
-
-;; // When the materials of the plane and the first circle meet, they should yield
-;;         // a contact friction of 0.3. We tell p2 this by creating a ContactMaterial.
-;;         var cm = new p2.ContactMaterial(planeShape.material, shape.material, {
-;;             friction : 0.3,
-;;         });
-;;         world.addContactMaterial(cm);
-
 
