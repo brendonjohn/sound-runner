@@ -83,28 +83,36 @@
 ;; background elements
 ;; ----------------------------------------------------------------------------
 
-(defn square-collection
-  "create data that's used for generating background squares relative to player position"
-  [x y]
-  [{:x 0 :y 10} {:x 20 :y 200} {:x 40 :y 400} {:x 60 :y 100} {:x 300 :y 300}
-   {:x 40 :y 10} {:x 50 :y 20}])
-
 (defn square-position [squarex squarey playerx playery]
   {:left (- squarex (* physics-to-pixel playerx))
    :bottom squarey})
 
+(def square-width 10)
+(def square-space 100)
+(def horizontal-squares (js/Math.round (/ (screen-width) square-space)))
+(def vertical-squares (js/Math.round (/ (screen-height) square-space)))
+
+
+(defn square-collection
+  "create data that's used for generating background squares relative to player position"
+  [x y]
+    (flatten (for [squarex (range 0 (* square-width vertical-squares) square-width)]
+      (for [squarey (range 0 (* square-width horizontal-squares) square-width)]
+        {:x (* 20 squarex) :y (* 20 squarey)}))))
+
 (defn square-element [square playerx playery]
   (dom/div #js {:style (clj->js (merge {:position "absolute"
                                         :background-color "red"
-                                        :width 50
-                                        :height 50}
+                                        :width square-width
+                                        :height square-width}
                                        (square-position (:x square) (:y square) playerx playery)))} nil))
 
 (defn background-view [player owner]
   (reify
     om/IRender
     (render [_]
-            (apply dom/div #js {:className "fullscreen"}
+            (apply dom/div #js {:className "fullscreen"
+                                :style #js {:overflow "hidden"}}
                    (map #(square-element % (:x player) (:y player)) (square-collection 1 2))))))
 
 
