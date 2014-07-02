@@ -85,10 +85,21 @@
 
 (defn square-position [squarex squarey playerx playery]
   {:left (- squarex (* physics-to-pixel playerx))
-   :bottom squarey})
+   :bottom (- squarey (* playery 0.01 squarey))})
+
+(defn square-rotation [squarex squarey playerx playery]
+  (let [rotation (* 2 (- squarex (* (/ physics-to-pixel 4) playerx)))
+        rotate (str "rotate(" rotation "deg)")
+        origin "40% 40%"]
+    {:transform rotate
+     :transform-origin origin
+     :-ms-transform rotate ;IE 9
+     :-ms-transform-origin origin ;IE 9 */
+     :-webkit-transform rotate ;Chrome, Safari, Opera
+     :-webkit-transform-origin origin}))
 
 (def square-width 10)
-(def square-space 100)
+(def square-space 200)
 (def horizontal-squares (js/Math.round (/ (screen-width) square-space)))
 (def vertical-squares (js/Math.round (/ (screen-height) square-space)))
 
@@ -96,8 +107,8 @@
 (defn square-collection
   "create data that's used for generating background squares relative to player position"
   [x y]
-    (flatten (for [squarex (range 0 (* square-width vertical-squares) square-width)]
-      (for [squarey (range 0 (* square-width horizontal-squares) square-width)]
+    (flatten (for [squarex (range 0 (* square-width horizontal-squares) square-width)]
+      (for [squarey (range 0 (* square-width vertical-squares) square-width)]
         {:x (* 20 squarex) :y (* 20 squarey)}))))
 
 (defn square-element [square playerx playery]
@@ -105,7 +116,8 @@
                                         :background-color "red"
                                         :width square-width
                                         :height square-width}
-                                       (square-position (:x square) (:y square) playerx playery)))} nil))
+                                       (square-position (:x square) (:y square) playerx playery)
+                                       (square-rotation (:x square) (:y square) playerx playery)))} nil))
 
 (defn background-view [player owner]
   (reify
