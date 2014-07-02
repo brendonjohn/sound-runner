@@ -35,8 +35,8 @@
 
 (def physics-to-pixel 80)
 
-(def screen-width (fn [_] js/window.innerWidth))
-(def screen-height (fn [_] js/window.innerHeight))
+(def screen-width (fn [] js/window.innerWidth))
+(def screen-height (fn [] js/window.innerHeight))
 
 
 ;; player view
@@ -69,16 +69,43 @@
   "construct a style string from a js array. e.g position = #js [0, 9.8]"
   [player]
   (clj->js (merge {:position "absolute"
-                  :background-color "orange"}
-                 (ps-size (:radius player))
-                 (ps-position (:x player) (:y player) (:radius player)))))
-
+                   :background-color "orange"}
+                  (ps-size (:radius player))
+                  (ps-position (:x player) (:y player) (:radius player)))))
 
 (defn player-view [player owner]
   (reify
     om/IRender
     (render [_]
             (dom/div #js {:style (player-style player)} "player"))))
+
+
+;; background elements
+;; ----------------------------------------------------------------------------
+
+(defn square-collection
+  "create data that's used for generating background squares relative to player position"
+  [x y]
+  [{:x 0 :y 10} {:x 20 :y 200} {:x 40 :y 400} {:x 60 :y 100} {:x 300 :y 300}
+   {:x 40 :y 10} {:x 50 :y 20}])
+
+(defn square-position [squarex squarey playerx playery]
+  {:left (- squarex (* physics-to-pixel playerx))
+   :bottom squarey})
+
+(defn square-element [square playerx playery]
+  (dom/div #js {:style (clj->js (merge {:position "absolute"
+                                        :background-color "red"
+                                        :width 50
+                                        :height 50}
+                                       (square-position (:x square) (:y square) playerx playery)))} nil))
+
+(defn background-view [player owner]
+  (reify
+    om/IRender
+    (render [_]
+            (apply dom/div #js {:className "fullscreen"}
+                   (map #(square-element % (:x player) (:y player)) (square-collection 1 2))))))
 
 
 ;; game view/wrapper
@@ -89,8 +116,7 @@
     om/IRender
     (render [_]
             (dom/div nil
+                     (om/build background-view (:player state))
                      (om/build player-coordinates (:player state))
                      (om/build player-view (:player state))))))
-
-
 
