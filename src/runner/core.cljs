@@ -35,6 +35,11 @@
                       :x 0
                       :y 1)))))
 
+
+;; tie om component to data
+;; ----------------------------------------------------------------------------
+
+
 (go (while true
       ;;wait for physics world to say that it has updated
       (<! physics-chan)
@@ -45,10 +50,6 @@
       (let [{:keys [dx dy]} (player-movement (:controller @controller-state))]
         (aset (.-force main-player) 1 (+ (aget (.-force main-player) 1) dy))
         (aset (.-force main-player) 0 (+ (aget (.-force main-player) 0) dx)))))
-
-;; tie om component to data
-;; ----------------------------------------------------------------------------
-
 (om/root game-view app-state
          {:target (. js/document (getElementById "game-wrapper"))})
 

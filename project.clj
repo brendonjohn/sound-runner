@@ -10,6 +10,7 @@
   :plugins [[lein-cljsbuild "1.0.3"]]
 
   :source-paths ["src"]
+  :resource-paths ["bower_components"]
 
   :cljsbuild {
     :builds [{:id "runner"
@@ -18,4 +19,13 @@
                 :output-to "runner.js"
                 :output-dir "out"
                 :optimizations :none
-                :source-map true}}]})
+                :source-map true}}
+             {:id "dist"
+              :source-paths ["src"]
+              :compiler {:output-to "dist/runner.js"
+                         :optimizations :simple
+                         :pretty-print false
+                         :preamble ["react/react.min.js"
+                                    "p2js/build/p2.min.js"]}}]})
+
+

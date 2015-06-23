@@ -9,5 +9,5 @@ pom.xml
 .lein-plugins/
 
 .nrepl-port
-runner.js
+/runner.js
 /bower_components
