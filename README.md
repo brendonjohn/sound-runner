@@ -4,6 +4,7 @@ I'm exploring clojurescript and the ecosystem around it. I quite enjoy what I've
 
 Sound-runner is supposed to be a light-weight game you to play while you listen to music via the soundcloud api. There currently isn't any sound or running, so the name really is misleading.
 
+See it working: http://brendonjohn.github.io/sound-runner/
 
 ##technology
 
